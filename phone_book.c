@@ -94,7 +94,12 @@ FILE *open_db_file() {
   
 void free_entries(entry *p) {
   /* TBD */
-  printf("Memory is not being freed. This needs to be fixed!\n");  
+  free(p);
+  while(p->next!=NULL){
+    free(p->next);
+    p=p->next;
+  }
+ // printf("Memory is not being freed. This needs to be fixed!\n");  
 }
 
 void print_usage(char *message, char *progname) {
@@ -184,7 +189,7 @@ int count=0 ;
     p=p->next;
     count++;
   }
-  printf("length:%d", count);
+  printf("Toatal Entries:%d", count);
   /* TBD print total count */
   free_entries(base);
 }
@@ -194,7 +199,7 @@ int delete(FILE *db_file, char *name) {
   entry *p = load_entries(db_file);
   entry *base = p;
   entry *prev = NULL;
-  entry *del = NULL ; /* Node to be deleted */
+  entry del = NULL ; /* Node to be deleted */
   int deleted = 0;
   while (p!=NULL) {
     if (strcmp(p->name, name) == 0) {
@@ -208,11 +213,37 @@ int delete(FILE *db_file, char *name) {
          
          If the node to be deleted is p0, it's a special case. 
       */
+      
 
       /* TBD */
+      if(prev==NULL){
+      del=base;
+      base=base->next;
+      free(del);
+      deleted=1;
+      }
     }
+    prev=p;
+    p=p->next;
   }
   write_all_entries(base);
   free_entries(base);
   return deleted;
+}
+int search (FILE*db_file,char*name){
+entry*p=load_entries(db_file);
+entry*base=p;
+int flag=0;
+while(p!=NULL){
+if(strcmp(p->name,name)==0){
+printf("%s\n",p->phone);
+flag=1;
+}
+p=p->next;
+}
+if(flag!=1){
+return(0):
+}
+free_entries(base);
+return(1);
 }
